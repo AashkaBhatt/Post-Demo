@@ -1,0 +1,12 @@
+<li class="list-group-item">
+  <strong><%= comment.user.email %></strong>
+  <p class="mb-0"><%= comment.description %></p>
+	<p><%= comment.get_likes.size %> Likes</p>
+	<div>
+		<% if current_user && current_user.liked?(comment) %>
+			<%= link_to 'Dislike Comment', react_comment_posts_path(comment_id: comment.id, reaction: 'disliked'), class: "btn btn-outline-danger" %>
+		<% else %>
+			<%= link_to 'Like Comment', react_comment_posts_path(comment_id: comment.id, reaction: 'liked'), class: "btn btn-outline-primary" %>
+		<% end %>
+	</div>
+</li>

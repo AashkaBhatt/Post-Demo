@@ -1,0 +1,65 @@
+<p>
+  <strong>Title:</strong>
+  <%= @post.title %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @post.description %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @post.user.email %>
+</p>
+<p><%= @post.get_likes.size %> Likes</p>
+<div>
+  <% if current_user && current_user.liked?(@post) %>
+    <%= link_to 'Dislike', post_react_post_path(post_id: @post.id, reaction: 'disliked'), class: "btn btn-danger" %>
+  <% else %>
+    <%= link_to 'Like', post_react_post_path(post_id: @post.id, reaction: 'liked'), class: "btn btn-primary" %>
+  <% end %>
+</div>
+<% if current_user && @post.user_id == current_user.id %>
+  <div>
+    <%= link_to 'Edit', edit_post_path(@post), class: "btn btn-primary my-2" %>
+  </div>
+<% end %>
+
+
+<h2 class="mt-3">Comments</h2>
+<div>
+  <ul class="list-group w-50">
+    <%= render partial: 'comment', collection: @post&.comments, as: :comment %>
+  </ul>
+</div>
+
+
+<% if user_signed_in? %>
+  <h3 class="mt-3">New Comment</h3>
+  <div>
+    <%= form_for @comment, as: :comment, url: create_comment_posts_path do |form| %>
+      <div class="my-1">
+        <div>
+          <%= form.label 'Comment:' %>
+        </div>
+        <div>
+          <%= form.text_area :description, rows: 3, class: "w-50" %>
+        </div>
+      </div>
+      <div class="field">
+        <%= form.hidden_field :user_id, value: current_user.id %>
+        <%= form.hidden_field :post_id, value: @post.id %>
+      </div>
+      <div class="actions">
+        <%= form.submit %>
+      </div>
+    <% end %>
+  </div>
+
+<% else %>
+  <%= link_to 'Sign In To Create Comment', user_session_path, class: "btn btn-secondary my-3" %><br>
+<% end %>
+
+
+<%= link_to 'Back', posts_path, class: "btn btn-dark" %>
